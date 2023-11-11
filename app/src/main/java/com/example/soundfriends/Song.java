@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.soundfriends.fragments.Model.Songs;
+import com.example.soundfriends.fragments.Model.UploadSongs;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,23 +49,60 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class Song extends AppCompatActivity {
+    private boolean isShuffling = false;
     boolean isPlaying = false;
     boolean isDirty = false;
+    boolean loopEnabled = false;
     private MediaPlayer mediaPlayer;
     private SeekBar seekBar;
     private final Handler handler = new Handler();
     private int currentPosition;
-
     private String audioURL;
-
     private String songId = "";
+    ImageButton imgbtnshuffle;
+    private Map<String, MusicItem> originalPlaylist;
+    private Map<String, MusicItem> shuffledPlaylist;
 
+    // Create a reference to the "songs" node in your Firebase Realtime Database
 
+    public class MusicItem {
+        private String title;
+        private String url;
+
+        public MusicItem() {
+            // Default constructor required for Firebase
+        }
+
+        public MusicItem(String title, String url) {
+            this.title = title;
+            this.url = url;
+        }
+
+        // Getters and setters...
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+    }
+    DatabaseReference songsRef = FirebaseDatabase.getInstance().getReference().child("songs");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song);
 
+        imgbtnshuffle =  findViewById(R.id.imgbtnshuffle);
         Song thisActivity = this;
 
         // Retrieve data from the Intent
@@ -71,9 +110,6 @@ public class Song extends AppCompatActivity {
         if (intent != null) {
             songId = intent.getStringExtra("songId");
         }
-
-        // Create a reference to the "songs" node in your Firebase Realtime Database
-        DatabaseReference songsRef = FirebaseDatabase.getInstance().getReference().child("songs");
 
 
         System.out.println("ID+++++++++: " + songId);
@@ -133,7 +169,7 @@ public class Song extends AppCompatActivity {
                             .load(bitmap)
                             .placeholder(com.firebase.ui.database.R.drawable.common_google_signin_btn_icon_dark)
                             .error(com.google.firebase.database.ktx.R.drawable.common_google_signin_btn_icon_dark_normal)
-                            .circleCrop()
+
                             .into(new CustomTarget<Bitmap>() {
                                 @Override
                                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -145,8 +181,6 @@ public class Song extends AppCompatActivity {
                                     // Xử lý khi tải bị xóa (nếu cần)
                                 }
                             });
-
-
                     try {
                         mediaPlayer.setDataSource(srl);
                         mediaPlayer.prepare();
@@ -188,6 +222,46 @@ public class Song extends AppCompatActivity {
 
         TextView txtPlay = findViewById(R.id.txtplay);
         ImageView imgDownload = findViewById(R.id.btnDownload);
+        ImageButton imgbtnloop = findViewById(R.id.imgbtnloop);
+        ImageView imgback = findViewById(R.id.imgback);
+
+
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                // Handle the completion of a song, e.g., play the next song in the playlist
+                playNextSong();
+            }
+        });
+
+        // Set up the shuffle button click listener
+        imgbtnshuffle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleShuffle();
+            }
+        });
+
+        // Fetch the original playlist from Firebase
+//        fetchOriginalPlaylist();
+
+        imgbtnloop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mediaPlayer != null) {
+                    if (loopEnabled) {
+                        mediaPlayer.setLooping(false); // Disable loop
+                        loopEnabled = false;
+                    } else {
+                        mediaPlayer.setLooping(true); // Enable loop
+                        loopEnabled = true;
+                    }
+                }
+
+            }
+        });
+
 
         txtPlay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,7 +290,114 @@ public class Song extends AppCompatActivity {
                 downloadAudio(audioURL);
             }
         });
+
+        imgback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Tạo Intent để chuyển đến Activity mới
+                Intent intent = new Intent(Song.this, UploadSongs.class);
+
+                // Khởi động Activity mới
+                startActivity(intent);
+            }
+        });
+
+
     }
+
+    private void fetchOriginalPlaylist() {
+        songsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Fetch the original playlist from Firebase
+
+                // Start playing the first song in the original playlist
+                playSong(dataSnapshot.getChildren().iterator().next().getValue(MusicItem.class));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle errors
+            }
+        });
+    }
+
+    private void toggleShuffle() {
+        isShuffling = !isShuffling;
+
+        if (isShuffling) {
+            // If shuffling is enabled, fetch the playlist and start shuffling
+            fetchAndShufflePlaylist();
+        }
+    }
+
+    private void fetchAndShufflePlaylist() {
+        songsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Fetch the original playlist from Firebase
+                DataSnapshot musicSnapshot = dataSnapshot.child("music");
+
+                // Shuffle the playlist
+                Iterable<DataSnapshot> musicData = musicSnapshot.getChildren();
+                playShuffledSong(musicData);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle errors
+            }
+        });
+    }
+
+    private void playShuffledSong(Iterable<DataSnapshot> musicData) {
+        // Implement your logic to shuffle the playlist and play the shuffled song
+        // For simplicity, this example just plays the first song in the shuffled playlist
+        DataSnapshot firstSongSnapshot = musicData.iterator().next();
+        MusicItem firstSong = firstSongSnapshot.getValue(MusicItem.class);
+        playSong(firstSong);
+    }
+
+    private void playNextSong() {
+        // Implement your logic to play the next song in the shuffled playlist
+        // For simplicity, this example just plays the first song in the shuffled playlist
+        songsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                DataSnapshot musicSnapshot = dataSnapshot.child("music");
+                Iterable<DataSnapshot> musicData = musicSnapshot.getChildren();
+                playShuffledSong(musicData);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle errors
+            }
+        });
+    }
+    private void playSong(MusicItem musicItem) {
+        // Implement the logic to play the specified song using MediaPlayer
+        // Set the data source, prepare, and start the MediaPlayer
+        try {
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(musicItem.getUrl());
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        // Release the MediaPlayer resources
+//        if (mediaPlayer != null) {
+//            mediaPlayer.release();
+//            mediaPlayer = null;
+//        }
+//    }
+
 
     private void resumeAudio() {
         if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
@@ -272,4 +453,5 @@ public class Song extends AppCompatActivity {
             return null;
         }
     }
+
 }

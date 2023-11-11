@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context=".Song">
 
+    <ImageView
+        android:id="@+id/imgback"
+        android:layout_gravity="left"
+        android:layout_marginLeft="20dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/back"
+        />
     <TextView
         android:id="@+id/txtMusicTitle"
         android:layout_width="wrap_content"
@@ -39,6 +54,7 @@
             android:src="@drawable/img_song_skeleton" />
 
     </androidx.cardview.widget.CardView>
+
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -119,18 +135,32 @@
         android:layout_marginTop="30dp"
         android:background="@color/white">
 
-        <TextView
-            android:id="@+id/shuffle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Shuffle"
-            android:textColor="@color/black" />
+        <ImageButton
+            android:id="@+id/imgbtnshuffle"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:backgroundTint="@color/white"
+            android:paddingLeft="25dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/shuffle"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+
+<!--        <TextView-->
+<!--            android:id="@+id/shuffle"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:paddingLeft="25dp"-->
+<!--            android:text="Shuffle"-->
+<!--            android:textColor="@color/black"-->
+
+<!--            />-->
 
         <TextView
             android:id="@+id/previous"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/shuffle"
+            android:layout_toRightOf="@id/imgbtnshuffle"
             android:paddingLeft="25dp"
             android:text="Previous"
             android:textColor="@color/black" />
@@ -154,17 +184,30 @@
             android:text="Next"
             android:textColor="@color/black" />
 
-        <TextView
-            android:id="@+id/loop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/imgbtnloop"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_toRightOf="@id/next"
-            android:background="@color/white"
+            android:backgroundTint="@color/white"
             android:paddingLeft="25dp"
-            android:text="Loop"
-            android:textColor="@color/black"
+            android:scaleType="fitCenter"
+            android:src="@drawable/loop"
+            tools:ignore="SpeakableTextPresentCheck" />
 
-            />
+
+
+<!--        <TextView-->
+<!--            android:id="@+id/loop"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_toRightOf="@id/next"-->
+<!--            android:background="@color/white"-->
+<!--            android:paddingLeft="25dp"-->
+<!--            android:text="Loop"-->
+<!--            android:textColor="@color/black"-->
+
+<!--            />-->
 
     </RelativeLayout>
 
@@ -182,9 +225,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-
         >
-
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/avatar1"
             android:layout_width="50dp"
@@ -205,13 +246,34 @@
 
     </RelativeLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom|end"
-        android:background="@color/primary_pink"
-        android:foregroundGravity="bottom"
-        app:menu="@menu/bottom_nav" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatar2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/avtar1" />
+
+<!--        theo ngày sinh, nếu ngày sinh lẻ thì implement ví dụ về mediaplayer-->
+
+        <Button
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="false"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@+id/avatar2"
+            android:backgroundTint="@color/white"
+            android:paddingLeft="25dp"
+            android:text="Bình luận  ..."
+            android:textColor="#A39F9F"
+            android:textSize="13sp" />
+
+    </RelativeLayout>
 
 </LinearLayout>
+
+</ScrollView>
