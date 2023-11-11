@@ -152,6 +152,12 @@
                 android:layout_below="@id/rl_layout"
                 />
 
+            <ProgressBar
+                android:id="@+id/rcvProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_uploaded_song" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcvlist_song_uploaded"
                 android:layout_width="match_parent"

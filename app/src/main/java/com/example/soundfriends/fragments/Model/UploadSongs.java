@@ -63,7 +63,7 @@ public class UploadSongs extends FirebaseRecyclerAdapter<Songs, UploadSongs.myVi
             // Lấy chuỗi bitmap từ Firebase (giả sử 'model.getUrlImg()' chứa chuỗi bitmap)
             String base64Image = model.getUrlImg();
             // Chuyển đổi chuỗi bitmap thành mảng byte
-            byte[] imageBytes = Base64.decode(base64Image, Base64.DEFAULT);
+            byte[] imageBytes = Base64.decode(base64Image, Base64.NO_WRAP);
 
             // Kiểm tra xem mảng byte có hợp lệ không
             if (imageBytes == null || imageBytes.length == 0) {

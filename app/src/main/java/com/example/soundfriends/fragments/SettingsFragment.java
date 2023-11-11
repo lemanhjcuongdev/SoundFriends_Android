@@ -70,7 +70,7 @@ import java.io.ByteArrayOutputStream;
 public class SettingsFragment extends Fragment  implements AdapterView.OnItemSelectedListener {
 
     TextView textViewImage;
-    ProgressBar progressBar;
+    ProgressBar progressBar, rcvProgressBar;
     RelativeLayout rlUploadingSong;
     Uri audioUri ;
     StorageReference mStorageref;
@@ -149,7 +149,7 @@ public class SettingsFragment extends Fragment  implements AdapterView.OnItemSel
         category = view.findViewById(R.id.tvCategory);
         imageView = view.findViewById(R.id.img1);
         rcvlist_song_uploaded = view.findViewById(R.id.rcvlist_song_uploaded);
-
+        rcvProgressBar = view.findViewById(R.id.rcvProgressBar);
 
         rcvlist_song_uploaded.setLayoutManager(new LinearLayoutManager(requireContext()));
 
@@ -194,8 +194,7 @@ public class SettingsFragment extends Fragment  implements AdapterView.OnItemSel
 
         uploadSongs = new UploadSongs(options);
         rcvlist_song_uploaded.setAdapter(uploadSongs);
-
-
+        ToggleShowHideUI.toggleShowUI(false, rcvProgressBar);
 
         metadataRetriever = new MediaMetadataRetriever();
         referenceSongs = FirebaseDatabase.getInstance().getReference().child("songs");
@@ -218,7 +217,6 @@ public class SettingsFragment extends Fragment  implements AdapterView.OnItemSel
                 uploadFileTofirebase(view);
             }
         });
-
 
         return view;
     }
@@ -244,6 +242,7 @@ public class SettingsFragment extends Fragment  implements AdapterView.OnItemSel
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
     }
 
     @Override
@@ -366,7 +365,7 @@ public class SettingsFragment extends Fragment  implements AdapterView.OnItemSel
                             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                             bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
                             byte[] imageBytes = byteArrayOutputStream.toByteArray();
-                            String base64Image = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+                            String base64Image = Base64.encodeToString(imageBytes, Base64.NO_WRAP);
 
                             Log.d(TAG, "onSuccess: " + art);
 
