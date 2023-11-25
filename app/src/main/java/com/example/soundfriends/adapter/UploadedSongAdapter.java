@@ -3,11 +3,7 @@ package com.example.soundfriends.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,9 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
+
 import com.example.soundfriends.R;
 import com.example.soundfriends.Song;
 import com.example.soundfriends.fragments.Model.Songs;
@@ -33,13 +27,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.annotations.Nullable;
-import android.util.Base64;
-import android.widget.Toast;
 
 
-public class UploadSongs extends FirebaseRecyclerAdapter<Songs, UploadSongs.myViewHolder> {
+public class UploadedSongAdapter extends FirebaseRecyclerAdapter<Songs, UploadedSongAdapter.myViewHolder> {
 
     /**
      * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
@@ -50,7 +40,7 @@ public class UploadSongs extends FirebaseRecyclerAdapter<Songs, UploadSongs.myVi
 
 
     private Context context;
-    public UploadSongs(@NonNull FirebaseRecyclerOptions<Songs> options) {
+    public UploadedSongAdapter(@NonNull FirebaseRecyclerOptions<Songs> options) {
         super(options);
 
     }

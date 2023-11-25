@@ -37,10 +37,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.soundfriends.R;
-import com.example.soundfriends.auth.Login;
 import com.example.soundfriends.auth.SharedAuthMethods;
 import com.example.soundfriends.fragments.Model.Songs;
-import com.example.soundfriends.adapter.UploadSongs;
+import com.example.soundfriends.adapter.UploadedSongAdapter;
 import com.example.soundfriends.utils.ToggleShowHideUI;
 import com.example.soundfriends.utils.WrapContentLinearLayoutManager;
 import com.example.soundfriends.utils.uuid;
@@ -59,8 +58,6 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.util.UUID;
 
 import java.io.ByteArrayOutputStream;
 
@@ -85,7 +82,7 @@ public class SettingsFragment extends Fragment  implements AdapterView.OnItemSel
     EditText title,artist,category;
     ImageView imageView ;
     String TAG = "huhu";
-    UploadSongs uploadSongs;
+    UploadedSongAdapter uploadedSongAdapter;
     RecyclerView rcvlist_song_uploaded;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -200,8 +197,8 @@ public class SettingsFragment extends Fragment  implements AdapterView.OnItemSel
                 .setQuery(query, Songs.class)
                 .build();
 
-        uploadSongs = new UploadSongs(options);
-        rcvlist_song_uploaded.setAdapter(uploadSongs);
+        uploadedSongAdapter = new UploadedSongAdapter(options);
+        rcvlist_song_uploaded.setAdapter(uploadedSongAdapter);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -295,13 +292,13 @@ public class SettingsFragment extends Fragment  implements AdapterView.OnItemSel
     @Override
     public void onStart() {
         super.onStart();
-        uploadSongs.startListening();
+        uploadedSongAdapter.startListening();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        uploadSongs.stopListening();
+        uploadedSongAdapter.stopListening();
 
     }
 
