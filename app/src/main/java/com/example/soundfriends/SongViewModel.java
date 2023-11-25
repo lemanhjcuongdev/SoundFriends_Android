@@ -1,0 +1,17 @@
+package com.example.soundfriends;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
+public class SongViewModel extends ViewModel {
+    private final MutableLiveData<Boolean> shouldResumeMusic = new MutableLiveData<>();
+
+    public LiveData<Boolean> getShouldResumeMusic() {
+        return shouldResumeMusic;
+    }
+
+    public void setShouldResumeMusic(boolean shouldResume) {
+        shouldResumeMusic.setValue(shouldResume);
+    }
+}

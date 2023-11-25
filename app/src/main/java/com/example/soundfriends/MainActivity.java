@@ -6,6 +6,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,6 +42,21 @@ public class MainActivity extends AppCompatActivity {
         //set view pager adapter at bottom navigation
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(viewPagerAdapter);
+        int pagePosition = 0;
+        Intent intent = getIntent();
+        if (intent != null) {
+            System.out.println("WTF");
+            String pagePositionString = intent.getStringExtra("pagePosition");
+            System.out.println("pagePositionString" + pagePositionString);
+
+            if(pagePositionString != null) {
+                pagePosition = Integer.parseInt(pagePositionString);
+                viewPager.setCurrentItem(pagePosition);
+                bottomNavigationView.getMenu().findItem(R.id.menu_settings).setChecked(true);
+            }
+
+        }
+
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
