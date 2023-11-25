@@ -32,12 +32,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.example.soundfriends.adapter.UploadSongs;
+import com.example.soundfriends.adapter.UploadedSongAdapter;
 import com.example.soundfriends.fragments.CommentsFragment;
 import com.example.soundfriends.utils.ImageProcessor;
 import com.google.firebase.database.DataSnapshot;
@@ -79,7 +78,6 @@ public class Song extends AppCompatActivity implements SensorEventListener {
     ImageButton loopBtn, imgback, shuffle, imgDownload;
     private boolean isLoop, isShuffling = false;
     private boolean isSeeking = false;
-    private SongViewModel songViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -315,32 +313,15 @@ public class Song extends AppCompatActivity implements SensorEventListener {
             }
         });
         imgback = findViewById(R.id.imgback);
-        songViewModel = new ViewModelProvider(this).get(SongViewModel.class);
+
         imgback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (mediaPlayer != null) {
-                    songViewModel.setShouldResumeMusic(mediaPlayer.isPlaying());
-                } else {
-                    songViewModel.setShouldResumeMusic(false);
-                }
-
                 // Tạo Intent để chuyển đến Activity mới
-                Intent intent = new Intent(Song.this, MainActivity.class);
-                intent.putExtra("pagePosition", "2");
+                Intent intent = new Intent(Song.this, UploadedSongAdapter.class);
 
                 // Khởi động Activity mới
                 startActivity(intent);
-
-
-                // Kiểm tra và tiếp tục phát nhạc (nếu cần)
-                Boolean shouldResume = songViewModel.getShouldResumeMusic().getValue();
-                if (shouldResume != null && shouldResume) {
-                    resumeAudio();
-                    // Tiếp tục phát nhạc ở đây
-                    // Ví dụ: resumeMusic();
-                }
             }
         });
 
@@ -364,8 +345,7 @@ public class Song extends AppCompatActivity implements SensorEventListener {
             @Override
             public void onClick(View v) {
                 updateUI_Shuffle();
-                setShuffle();
-//                toggleShuffle();
+                //toggleShuffle();
             }
         });
     }

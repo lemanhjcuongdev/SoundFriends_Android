@@ -12,13 +12,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.example.soundfriends.R;
-import com.example.soundfriends.adapter.UploadSongs;
+import com.example.soundfriends.adapter.UploadedSongAdapter;
 import com.example.soundfriends.fragments.Model.Songs;
 import com.example.soundfriends.utils.WrapContentLinearLayoutManager;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,7 +35,7 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemSelect
     private String mParam2;
 
     RecyclerView recyclerView;
-    UploadSongs uploadSongs;
+    UploadedSongAdapter uploadedSongAdapter;
 
 
 
@@ -87,8 +85,8 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemSelect
                 .setQuery(FirebaseDatabase.getInstance().getReference().child("songs"), Songs.class)
                 .build();
 
-        uploadSongs = new UploadSongs(options);
-        recyclerView.setAdapter(uploadSongs);
+        uploadedSongAdapter = new UploadedSongAdapter(options);
+        recyclerView.setAdapter(uploadedSongAdapter);
 
 
         return view;
@@ -98,13 +96,13 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemSelect
     @Override
     public void onStart() {
         super.onStart();
-        uploadSongs.startListening();
+        uploadedSongAdapter.startListening();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        uploadSongs.stopListening();
+        uploadedSongAdapter.stopListening();
     }
 
     @Override
