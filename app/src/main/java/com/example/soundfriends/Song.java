@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -162,7 +163,20 @@ public class Song extends AppCompatActivity implements SensorEventListener {
                 playNextSong();
             }
         });
-        // Fetch the original playlist from Firebase
+
+        //listen back pressed event
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Tạo Intent để chuyển đến Activity mới
+                Intent intent = new Intent(Song.this, MainActivity.class);
+                intent.putExtra("pagePosition", "0");
+
+                // Khởi động Activity mới
+                startActivity(intent);
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     private void getData() {
@@ -318,7 +332,8 @@ public class Song extends AppCompatActivity implements SensorEventListener {
             @Override
             public void onClick(View v) {
                 // Tạo Intent để chuyển đến Activity mới
-                Intent intent = new Intent(Song.this, UploadedSongAdapter.class);
+                Intent intent = new Intent(Song.this, MainActivity.class);
+                intent.putExtra("pagePosition", "0");
 
                 // Khởi động Activity mới
                 startActivity(intent);
@@ -345,6 +360,7 @@ public class Song extends AppCompatActivity implements SensorEventListener {
             @Override
             public void onClick(View v) {
                 updateUI_Shuffle();
+                setShuffle();
                 //toggleShuffle();
             }
         });
