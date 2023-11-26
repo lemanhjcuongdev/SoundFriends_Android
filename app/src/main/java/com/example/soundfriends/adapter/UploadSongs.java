@@ -51,7 +51,6 @@ public class UploadSongs extends FirebaseRecyclerAdapter<Songs, UploadSongs.myVi
     private Context context;
     public UploadSongs(@NonNull FirebaseRecyclerOptions<Songs> options) {
         super(options);
-
     }
 
     @Override

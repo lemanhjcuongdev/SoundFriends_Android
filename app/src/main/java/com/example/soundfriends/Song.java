@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -36,6 +37,8 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.soundfriends.adapter.UploadSongs;
 import com.example.soundfriends.fragments.CommentsFragment;
+import com.example.soundfriends.fragments.Model.Comment;
+import com.example.soundfriends.fragments.Model.Songs;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -79,12 +82,22 @@ public class Song extends AppCompatActivity implements SensorEventListener {
 
     private List<String> originalPlaylist;
     private List<String> shuffledPlaylist;
+    ImageView like;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song);
+
+        like = findViewById(R.id.like);
+        like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                increaseLikeCount();
+            }
+        });
 
         getData();
         //send song id to load comment of that song
@@ -113,7 +126,8 @@ public class Song extends AppCompatActivity implements SensorEventListener {
             }
         });
 
-        sensorManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        sensorManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 // Handle the completion of a song, e.g., play the next song in the playlist
@@ -131,6 +145,56 @@ public class Song extends AppCompatActivity implements SensorEventListener {
             }
         });
 
+    }
+
+    private void increaseLikeCount() {
+        // Retrieve data from the Intent
+        Intent intent = getIntent();
+        if (intent != null) {
+            songId = intent.getStringExtra("songId");
+        }
+
+        // Create a reference to the "songs" node in your Firebase Realtime Database
+        DatabaseReference songsRef = FirebaseDatabase.getInstance().getReference().child("songs");
+
+        // Query the specific song by its ID
+        Query songQuery = songsRef.orderByChild("id").equalTo(songId);
+
+        songQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot songSnapshot : dataSnapshot.getChildren()) {
+                    Integer likeSongCountNumber = songSnapshot.child("likeSongCount").getValue(Integer.class);
+
+                    if (likeSongCountNumber != null) {
+                        int newLikes = likeSongCountNumber + 1;
+                        // Cập nhật số lượng like mới vào Firebase
+                        songSnapshot.getRef().child("likeSongCount").setValue(newLikes);
+
+                        // Cập nhật trạng thái liked thành true và lưu vào Firebase
+                        songSnapshot.getRef().child("likeSong").setValue(true);
+                        updateUIWithNewLikeCount(newLikes);
+                    } else {
+                        // Xử lý trường hợp khi giá trị là null
+                        Toast.makeText(getApplicationContext(), "Giá trị của likeSongCount là null", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Xử lý lỗi nếu có
+            }
+        });
+
+    }
+
+    private void updateUIWithNewLikeCount(int newLikeCount) {
+        TextView textlike = findViewById(R.id.textlike);
+        textlike.setText(String.valueOf(newLikeCount));
+
+        int likeDrawableResId = true ? R.drawable.ic_like_selected : R.drawable.ic_like_unselected;
+        like.setImageResource(likeDrawableResId);
     }
 
     private void getData() {
@@ -157,6 +221,8 @@ public class Song extends AppCompatActivity implements SensorEventListener {
                     String artist = songSnapshot.child("artist").getValue(String.class);
                     String imgUrl = songSnapshot.child("urlImg").getValue(String.class);
                     String srl = songSnapshot.child("srl").getValue(String.class);
+                    Boolean isLikeSong = songSnapshot.child("likeSong").getValue(Boolean.class);
+                    Integer likeSongCount = songSnapshot.child("likeSongCount").getValue(Integer.class);
                     Integer nullIndex = songSnapshot.child("indexSong").getValue(Integer.class);
                     if (nullIndex != null) {
                         int currentIndex = nullIndex.intValue();
@@ -175,6 +241,11 @@ public class Song extends AppCompatActivity implements SensorEventListener {
 
                     ImageView imgSong = findViewById(R.id.imgsong);
 
+                    TextView textlike = findViewById(R.id.textlike);
+                    textlike.setText(String.valueOf(likeSongCount));
+
+                    int likeDrawableResId = isLikeSong ? R.drawable.ic_like_selected : R.drawable.ic_like_unselected;
+                    like.setImageResource(likeDrawableResId);
 
                     // Lấy chuỗi bitmap từ Firebase (giả sử 'model.getUrlImg()' chứa chuỗi bitmap)
                     String base64Image = imgUrl;
@@ -483,6 +554,7 @@ public class Song extends AppCompatActivity implements SensorEventListener {
                     String imgUrl = songSnapshot.child("urlImg").getValue(String.class);
                     String srl = songSnapshot.child("srl").getValue(String.class);
 
+
                     audioURL = srl;
 
                     TextView textViewMusicTitle = findViewById(R.id.txtMusicTitle);
@@ -492,6 +564,7 @@ public class Song extends AppCompatActivity implements SensorEventListener {
                     txtArtist.setText(artist);
 
                     ImageView imgSong = findViewById(R.id.imgsong);
+                    ImageView like = findViewById(R.id.like);
 
                     //update comment per song
                     sendDataToFragment(songSnapshot.child("id").getValue(String.class));
@@ -642,7 +715,7 @@ public class Song extends AppCompatActivity implements SensorEventListener {
             // Kiểm tra nếu gia tốc vượt qua một ngưỡng (đây là ví dụ)
             if (acceleration > 12) {
                 // Xử lý sự kiện lắc, ví dụ: chuyển bài hát
-//                Toast.makeText(getApplicationContext(), "xảy ra sự kiện lắc", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "xảy ra sự kiện lắc", Toast.LENGTH_SHORT).show();
                 playNextSong();
             }
         }

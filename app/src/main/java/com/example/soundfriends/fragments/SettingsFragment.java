@@ -101,6 +101,10 @@ public class SettingsFragment extends Fragment  implements AdapterView.OnItemSel
     Bitmap bitmap;
     int songIndex;
 
+    boolean isLikeSong = false;
+    int likeSongCount = 0;
+
+
 
 
     public SettingsFragment() {
@@ -410,7 +414,7 @@ public class SettingsFragment extends Fragment  implements AdapterView.OnItemSel
                             }
 
                             String songId = uuid.createTransactionID();
-                            Songs uploadSong = new Songs(songIndex, songId, title1, artist1, category1, base64Image, uri.toString(), userID);
+                            Songs uploadSong = new Songs(songIndex, songId, title1, artist1, category1, base64Image, uri.toString(), userID, isLikeSong, likeSongCount);
                             String uploadId = referenceSongs.push().getKey();
                             referenceSongs.child(uploadId).setValue(uploadSong);
 
