@@ -1,5 +1,7 @@
 package com.example.soundfriends.fragments.Model;
 
+import android.graphics.Bitmap;
+
 public class Song {
 
         public  String id, title, artist, category, urlImg, srl, userID;

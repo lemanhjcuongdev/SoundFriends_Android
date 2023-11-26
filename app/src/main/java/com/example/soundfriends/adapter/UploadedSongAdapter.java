@@ -42,7 +42,6 @@ public class UploadedSongAdapter extends FirebaseRecyclerAdapter<Song, UploadedS
     private Context context;
     public UploadedSongAdapter(@NonNull FirebaseRecyclerOptions<Song> options) {
         super(options);
-
     }
 
     @Override
