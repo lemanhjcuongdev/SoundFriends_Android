@@ -5,12 +5,13 @@ import android.graphics.Bitmap;
 public class Songs {
 
         public  String id, title, artist, category, urlImg, srl, userID;
-        int indexSong;
+        int indexSong, likeSongCount;
+        boolean isLikeSong;
 
         public Songs() {
         }
 
-        public Songs(int indexSong, String id, String title, String artist, String category, String urlImg, String srl, String userID) {
+        public Songs(int indexSong, String id, String title, String artist, String category, String urlImg, String srl, String userID, boolean isLikeSong, int likeSongCount) {
 
 
             if(title.trim().equals("")){
@@ -25,6 +26,8 @@ public class Songs {
             this.srl = srl;
             this.userID = userID;
             this.indexSong = indexSong;
+            this.isLikeSong = isLikeSong;
+            this.likeSongCount = likeSongCount;
         }
 
 
@@ -87,5 +90,21 @@ public class Songs {
 
     public void setIndexSong(int indexSong) {
         this.indexSong = indexSong;
+    }
+
+    public boolean isLikeSong() {
+        return isLikeSong;
+    }
+
+    public void setLikeSong(boolean likeSong) {
+        isLikeSong = likeSong;
+    }
+
+    public int getLikeSongCount() {
+        return likeSongCount;
+    }
+
+    public void setLikeSongCount(int likeSongCount) {
+        this.likeSongCount = likeSongCount;
     }
 }
