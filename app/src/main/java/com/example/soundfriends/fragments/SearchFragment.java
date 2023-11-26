@@ -6,24 +6,28 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.example.soundfriends.R;
 import com.example.soundfriends.adapter.UploadedSongAdapter;
-import com.example.soundfriends.fragments.Model.Songs;
+import com.example.soundfriends.fragments.Model.Song;
 import com.example.soundfriends.utils.WrapContentLinearLayoutManager;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SearchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class SearchFragment extends Fragment {
+    FirebaseDatabase database;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -79,10 +83,18 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemSelect
         recyclerView =(RecyclerView) view.findViewById(R.id.rcvlist_search);
         recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
 
+        //Get data from inputSearch in MainActivity
+        Bundle bundle = getArguments();
+//        String searchValue = bundle.getString("search_keyword", "");
 
         // Xây dựng options và thiết lập Adapter
-        FirebaseRecyclerOptions<Songs> options = new FirebaseRecyclerOptions.Builder<Songs>()
-                .setQuery(FirebaseDatabase.getInstance().getReference().child("songs"), Songs.class)
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference songRef = database.getReference("songs");
+
+        Query query = songRef.orderByChild("title").equalTo("");
+
+        FirebaseRecyclerOptions<Song> options = new FirebaseRecyclerOptions.Builder<Song>()
+                .setQuery(query, Song.class)
                 .build();
 
         uploadedSongAdapter = new UploadedSongAdapter(options);
@@ -90,28 +102,5 @@ public class SearchFragment extends Fragment implements AdapterView.OnItemSelect
 
 
         return view;
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        uploadedSongAdapter.startListening();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        uploadedSongAdapter.stopListening();
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 }

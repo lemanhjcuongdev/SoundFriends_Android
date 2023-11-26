@@ -12,11 +12,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.soundfriends.adapter.ViewPagerAdapter;
 import com.example.soundfriends.auth.Login;
+import com.example.soundfriends.fragments.SearchFragment;
 import com.example.soundfriends.utils.ToggleInputFocus;
 import com.example.soundfriends.utils.ZoomOutPageTransformer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -25,7 +28,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
-    AutoCompleteTextView searchBar;
+    EditText inputSearch;
+    ImageButton btnSearch;
     ViewPager2 viewPager;
     BottomNavigationView bottomNavigationView;
     @Override
@@ -34,10 +38,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         viewPager = (ViewPager2) findViewById(R.id.view_pager);
+        //disable swipe to change view pager
         viewPager.setUserInputEnabled(false);
 //        viewPager.setPageTransformer(new ZoomOutPageTransformer());
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_nav);
-        searchBar = findViewById(R.id.search_bar);
+        inputSearch = findViewById(R.id.search_bar);
+        btnSearch = findViewById(R.id.btnSearch);
 
         //set view pager adapter at bottom navigation
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
@@ -83,9 +89,29 @@ public class MainActivity extends AppCompatActivity {
                     viewPager.setCurrentItem(1);
                 } else viewPager.setCurrentItem(2);
 
-                ToggleInputFocus.unfocusAndHideKeyboard(MainActivity.this, searchBar);
+                ToggleInputFocus.unfocusAndHideKeyboard(MainActivity.this, inputSearch);
                 return true;
             }
         });
+
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handleSearch();
+            }
+        });
+    }
+
+    private void handleSearch() {
+        if (!inputSearch.getText().toString().trim().isEmpty()){
+            String searchValue = inputSearch.getText().toString().trim();
+            Bundle bundle = new Bundle();
+            bundle.putString("search_keyword", searchValue);
+
+            SearchFragment searchFragment = new SearchFragment();
+            searchFragment.setArguments(bundle);
+
+            viewPager.setCurrentItem(1, true);
+        }
     }
 }

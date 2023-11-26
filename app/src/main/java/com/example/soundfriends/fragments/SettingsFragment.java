@@ -38,7 +38,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.soundfriends.R;
 import com.example.soundfriends.auth.SharedAuthMethods;
-import com.example.soundfriends.fragments.Model.Songs;
+import com.example.soundfriends.fragments.Model.Song;
 import com.example.soundfriends.adapter.UploadedSongAdapter;
 import com.example.soundfriends.utils.ToggleShowHideUI;
 import com.example.soundfriends.utils.WrapContentLinearLayoutManager;
@@ -193,8 +193,8 @@ public class SettingsFragment extends Fragment  implements AdapterView.OnItemSel
 
         Query query = songsRef.orderByChild("userID").equalTo(userID);
 
-        FirebaseRecyclerOptions<Songs> options = new FirebaseRecyclerOptions.Builder<Songs>()
-                .setQuery(query, Songs.class)
+        FirebaseRecyclerOptions<Song> options = new FirebaseRecyclerOptions.Builder<Song>()
+                .setQuery(query, Song.class)
                 .build();
 
         uploadedSongAdapter = new UploadedSongAdapter(options);
@@ -440,7 +440,7 @@ public class SettingsFragment extends Fragment  implements AdapterView.OnItemSel
                             }
 
                             String songId = uuid.createTransactionID();
-                            Songs uploadSong = new Songs(songIndex, songId, title1, artist1, category1, base64Image, uri.toString(), userID);
+                            Song uploadSong = new Song(songIndex, songId, title1, artist1, category1, base64Image, uri.toString(), userID);
                             String uploadId = referenceSongs.push().getKey();
                             referenceSongs.child(uploadId).setValue(uploadSong);
 

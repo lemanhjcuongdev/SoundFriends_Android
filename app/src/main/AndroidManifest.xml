@@ -36,7 +36,7 @@
             android:name=".auth.Register"
             android:exported="true" />
         <activity
-            android:name=".Song"
+            android:name=".SongActivity"
             android:exported="false" />
         <activity
             android:name=".auth.Login"

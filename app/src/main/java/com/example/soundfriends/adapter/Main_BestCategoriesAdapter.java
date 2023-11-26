@@ -1,12 +1,10 @@
 package com.example.soundfriends.adapter;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +12,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.soundfriends.R;
-import com.example.soundfriends.Song;
-import com.example.soundfriends.fragments.Model.Songs;
+import com.example.soundfriends.SongActivity;
+import com.example.soundfriends.fragments.Model.Song;
 import com.example.soundfriends.utils.ImageProcessor;
 
 import java.util.List;
 
 public class Main_BestCategoriesAdapter extends RecyclerView.Adapter<Main_BestCategoriesAdapter.MainBestCategoryViewHolder>{
     private Context context;
-    private List<Songs> listSong;
+    private List<Song> listSong;
 
-    public Main_BestCategoriesAdapter(Context context, List<Songs> listSong) {
+    public Main_BestCategoriesAdapter(Context context, List<Song> listSong) {
         this.context = context;
         this.listSong = listSong;
     }
@@ -37,7 +35,7 @@ public class Main_BestCategoriesAdapter extends RecyclerView.Adapter<Main_BestCa
 
     @Override
     public void onBindViewHolder(@NonNull MainBestCategoryViewHolder holder, int position) {
-        Songs song = listSong.get(position);
+        Song song = listSong.get(position);
 
         handleItemClick(holder, song);
 
@@ -67,13 +65,13 @@ public class Main_BestCategoriesAdapter extends RecyclerView.Adapter<Main_BestCa
             tvCategory = itemView.findViewById(R.id.tv_best_category);
         }
     }
-    private void handleItemClick(Main_BestCategoriesAdapter.MainBestCategoryViewHolder holder, Songs model){
+    private void handleItemClick(Main_BestCategoriesAdapter.MainBestCategoryViewHolder holder, Song model){
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 // Create an Intent to open the target Activity
-                Intent intent = new Intent(context, Song.class);
+                Intent intent = new Intent(context, SongActivity.class);
 
                 // Pass any necessary data to the SongActivity (e.g., selected item data)
                 intent.putExtra("songId", model.getId());

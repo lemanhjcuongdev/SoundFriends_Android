@@ -13,7 +13,7 @@
         android:focusableInTouchMode="true"
         android:focusable="true">
 
-        <AutoCompleteTextView
+        <EditText
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
             android:layout_height="69dp"
@@ -22,16 +22,18 @@
             android:completionThreshold="1"
             android:hint="Tìm trên SoundFriends ..."
             android:maxLines="1"
-            android:paddingLeft="26dp" />
+            android:paddingLeft="26dp"
+            android:imeOptions="actionSearch"
+            android:singleLine="true"/>
 
         <ImageButton
             android:id="@+id/btnSearch"
             android:layout_width="match_parent"
             android:layout_height="69dp"
             android:layout_weight="5"
-            android:contentDescription="Voice Search"
+            android:contentDescription="Search"
             android:background="@color/primary_pink"
-            app:srcCompat="@drawable/round_mic_24" />
+            app:srcCompat="@drawable/round_search_24" />
 
     </LinearLayout>
 

@@ -1,43 +1,36 @@
 package com.example.soundfriends;
 
-import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
-import android.media.Image;
 import android.media.MediaPlayer;
+import android.media.session.MediaController;
+import android.media.session.MediaSessionManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.util.Base64;
-import android.util.Log;
+import android.os.RemoteException;
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
-import com.example.soundfriends.adapter.UploadedSongAdapter;
 import com.example.soundfriends.fragments.CommentsFragment;
 import com.example.soundfriends.utils.ImageProcessor;
 import com.google.firebase.database.DataSnapshot;
@@ -50,14 +43,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-public class Song extends AppCompatActivity implements SensorEventListener {
+public class SongActivity extends AppCompatActivity implements SensorEventListener {
     boolean isPlaying = false;
     boolean isDirty = false;
     private MediaPlayer mediaPlayer;
@@ -169,7 +160,7 @@ public class Song extends AppCompatActivity implements SensorEventListener {
             @Override
             public void handleOnBackPressed() {
                 // Tạo Intent để chuyển đến Activity mới
-                Intent intent = new Intent(Song.this, MainActivity.class);
+                Intent intent = new Intent(SongActivity.this, MainActivity.class);
                 intent.putExtra("pagePosition", "0");
 
                 // Khởi động Activity mới
@@ -332,7 +323,7 @@ public class Song extends AppCompatActivity implements SensorEventListener {
             @Override
             public void onClick(View v) {
                 // Tạo Intent để chuyển đến Activity mới
-                Intent intent = new Intent(Song.this, MainActivity.class);
+                Intent intent = new Intent(SongActivity.this, MainActivity.class);
                 intent.putExtra("pagePosition", "0");
 
                 // Khởi động Activity mới

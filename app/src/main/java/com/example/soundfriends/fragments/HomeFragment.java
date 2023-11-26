@@ -17,16 +17,13 @@ import com.example.soundfriends.R;
 import com.example.soundfriends.adapter.Main_BestCategoriesAdapter;
 import com.example.soundfriends.adapter.Main_BestSingersAdapter;
 import com.example.soundfriends.adapter.Main_BestSongsAdapter;
-import com.example.soundfriends.fragments.Model.Comment;
-import com.example.soundfriends.fragments.Model.Songs;
+import com.example.soundfriends.fragments.Model.Song;
 import com.example.soundfriends.utils.ToggleShowHideUI;
 import com.example.soundfriends.utils.WrapContentLinearLayoutManager;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -45,9 +42,9 @@ public class HomeFragment extends Fragment {
     FirebaseDatabase database;
     DatabaseReference songsRef;
     ProgressBar pbLoadHome;
-    List<Songs> bestSongs = new ArrayList<>();
-    List<Songs> bestSingers = new ArrayList<>();
-    List<Songs> bestCategories = new ArrayList<>();
+    List<Song> bestSongs = new ArrayList<>();
+    List<Song> bestSingers = new ArrayList<>();
+    List<Song> bestCategories = new ArrayList<>();
     LinearLayout layoutBestSong, layoutBestSinger, layoutBestCategory;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -136,34 +133,34 @@ public class HomeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshotItem: snapshot.getChildren()){
                     //best song
-                    Songs song = dataSnapshotItem.getValue(Songs.class);
+                    Song song = dataSnapshotItem.getValue(Song.class);
                     bestSongs.add(song);
 
                     //best singer
                     String currentSinger = dataSnapshotItem.child("artist").getValue(String.class);
                     Boolean containsSinger = false;
-                    for(Songs songArtist : bestSingers){
+                    for(Song songArtist : bestSingers){
                         if (songArtist.getArtist().equals(currentSinger)){
                             containsSinger = true;
                             break;
                         }
                     }
                     if (!containsSinger){
-                        Songs songArtist = dataSnapshotItem.getValue(Songs.class);
+                        Song songArtist = dataSnapshotItem.getValue(Song.class);
                         bestSingers.add(songArtist);
                     }
 
                     //best category
                     String currentCategory = dataSnapshotItem.child("category").getValue(String.class);
                     Boolean containsCategory = false;
-                    for(Songs songCategory : bestCategories){
+                    for(Song songCategory : bestCategories){
                         if (songCategory.getCategory().equals(currentCategory)){
                             containsCategory = true;
                             break;
                         }
                     }
                     if (!containsCategory){
-                        Songs songCategory = dataSnapshotItem.getValue(Songs.class);
+                        Song songCategory = dataSnapshotItem.getValue(Song.class);
                         bestCategories.add(songCategory);
                     }
                 }

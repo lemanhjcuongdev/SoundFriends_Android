@@ -17,8 +17,8 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.soundfriends.R;
-import com.example.soundfriends.Song;
-import com.example.soundfriends.fragments.Model.Songs;
+import com.example.soundfriends.SongActivity;
+import com.example.soundfriends.fragments.Model.Song;
 import com.example.soundfriends.utils.ImageProcessor;
 import com.example.soundfriends.utils.ToggleShowHideUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -29,7 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
-public class UploadedSongAdapter extends FirebaseRecyclerAdapter<Songs, UploadedSongAdapter.myViewHolder> {
+public class UploadedSongAdapter extends FirebaseRecyclerAdapter<Song, UploadedSongAdapter.myViewHolder> {
 
     /**
      * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
@@ -40,13 +40,13 @@ public class UploadedSongAdapter extends FirebaseRecyclerAdapter<Songs, Uploaded
 
 
     private Context context;
-    public UploadedSongAdapter(@NonNull FirebaseRecyclerOptions<Songs> options) {
+    public UploadedSongAdapter(@NonNull FirebaseRecyclerOptions<Song> options) {
         super(options);
 
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull myViewHolder holder, int position, @NonNull Songs model) {
+    protected void onBindViewHolder(@NonNull myViewHolder holder, int position, @NonNull Song model) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String userIDLogin = "";
         if (currentUser != null){
@@ -97,14 +97,14 @@ public class UploadedSongAdapter extends FirebaseRecyclerAdapter<Songs, Uploaded
         }
     }
 
-    private void onClickHolder(myViewHolder holder, Songs model) {
+    private void onClickHolder(myViewHolder holder, Song model) {
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 // Create an Intent to open the target Activity
-                Intent intent = new Intent(context, Song.class);
+                Intent intent = new Intent(context, SongActivity.class);
 
                 // Pass any necessary data to the SongActivity (e.g., selected item data)
                 intent.putExtra("songId", model.getId());
@@ -124,7 +124,7 @@ public class UploadedSongAdapter extends FirebaseRecyclerAdapter<Songs, Uploaded
             }
         });
     }
-    private void showPopUpMenu(View view, Songs song, String songRefKey){
+    private void showPopUpMenu(View view, Song song, String songRefKey){
         PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
         popupMenu.inflate(R.menu.uploaded_songs_popup_menu);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

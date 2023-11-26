@@ -1,16 +1,14 @@
 package com.example.soundfriends.fragments.Model;
 
-import android.graphics.Bitmap;
-
-public class Songs {
+public class Song {
 
         public  String id, title, artist, category, urlImg, srl, userID;
         int indexSong;
 
-        public Songs() {
+        public Song() {
         }
 
-        public Songs(int indexSong, String id, String title, String artist, String category, String urlImg, String srl, String userID) {
+        public Song(int indexSong, String id, String title, String artist, String category, String urlImg, String srl, String userID) {
 
 
             if(title.trim().equals("")){

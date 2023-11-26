@@ -23,7 +23,7 @@ import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.soundfriends.R;
-import com.example.soundfriends.Song;
+import com.example.soundfriends.SongActivity;
 import com.example.soundfriends.adapter.CommentAdapter;
 import com.example.soundfriends.auth.SharedAuthMethods;
 import com.example.soundfriends.fragments.Model.Comment;
@@ -65,7 +65,7 @@ public class CommentsFragment extends Fragment {
     DatabaseReference commentReferences;
     List<Comment> comments = new ArrayList<>();
     String currentSongId;
-    Song songActivity;
+    SongActivity songActivity;
     Callable<Void> onLikeButtonClicked = new Callable<Void>() {
         @Override
         public Void call() throws Exception {
@@ -123,7 +123,7 @@ public class CommentsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
-        songActivity = (Song) getActivity();
+        songActivity = (SongActivity) getActivity();
         currentSongId = getArguments().getString("key_song_id");
 
         layoutInputComment = view.findViewById(R.id.layoutInputComment);
